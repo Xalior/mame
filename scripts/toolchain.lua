@@ -33,6 +33,7 @@ newoption {
 		{ "openbsd-clang", "OpenBSD (clang compiler)"},
 		{ "osx",           "OSX (GCC compiler)"     },
 		{ "osx-clang",     "OSX (Clang compiler)"   },
+		{ "rapi-circle",   "Raspberry Pi bare-metal (Circle, GCC cross compiler)" },
 	},
 }
 
@@ -149,6 +150,13 @@ function toolchain(_buildDir, _subDir)
 			premake.gcc.cxx = "clang++"
 			premake.gcc.ar  = "ar"
 			location (_buildDir .. "projects/" .. _subDir .. "/".. _ACTION .. "-linux-clang")
+		end
+
+		if "rapi-circle" == _OPTIONS["gcc"] then
+			premake.gcc.cc  = toolchainPrefix .. "gcc"
+			premake.gcc.cxx = toolchainPrefix .. "g++"
+			premake.gcc.ar  = toolchainPrefix .. "ar"
+			location (_buildDir .. "projects/" .. _subDir .. "/".. _ACTION .. "-rapi-circle")
 		end
 
 		if "mingw32-gcc" == _OPTIONS["gcc"] then

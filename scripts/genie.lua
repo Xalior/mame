@@ -153,6 +153,7 @@ newoption {
 		{ "macosx",        "OSX"                    },
 		{ "windows",       "Windows"                },
 		{ "haiku",         "Haiku"                  },
+		{ "rapi-circle",   "Raspberry Pi bare-metal (Circle)" },
 	},
 }
 
@@ -1168,6 +1169,12 @@ configuration { "android*" }
 	buildoptions {
 		"-Wno-error=undef", -- in ASIO
 		"-Wno-error=macro-redefined", -- PAGE_SIZE,PAGE_MASK in fairlight/cmi.cpp
+	}
+	archivesplit_size "20"
+
+configuration { "rapi-circle" }
+	defines {
+		"ASIO_HAS_PTHREADS", -- the C library offers no other TSS mechanism ASIO recognises
 	}
 	archivesplit_size "20"
 

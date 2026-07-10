@@ -470,6 +470,8 @@ else ifeq ($(TARGETOS),macosx)
 OSD := sdl3
 else ifeq ($(TARGETOS),asmjs)
 OSD := sdl
+else ifeq ($(TARGETOS),rapi-circle)
+OSD := sdl
 endif # TARGETOS
 
 endif # OSD
@@ -1010,7 +1012,7 @@ ifeq ($(CLANG_VERSION),)
 $(info GCC $(GCC_VERSION) detected)
 else # CLANG_VERSION
 $(info Clang $(CLANG_VERSION) detected)
-ifneq ($(TARGETOS),asmjs)
+ifeq ($(filter asmjs rapi-circle,$(TARGETOS)),)
 ifeq ($(ARCHITECTURE),_x64)
 ARCHITECTURE := _x64_clang
 else ifneq ($(filter aarch64%,$(UNAME_M)),)
@@ -1022,7 +1024,7 @@ ARCHITECTURE := _arm64_clang
 else
 ARCHITECTURE := _x86_clang
 endif
-endif # asmjs
+endif # asmjs / rapi-circle
 endif # CLANG_VERSION
 
 ifneq ($(PYTHON_AVAILABLE),python)
@@ -1245,6 +1247,18 @@ ifndef EMSCRIPTEN
 endif
 	$(SILENT) $(MAKE) $(MAKEPARAMS) -C $(PROJECTDIR)/$(MAKETYPE)-asmjs config=$(CONFIG) precompile
 	$(SILENT) $(MAKE) $(MAKEPARAMS) -C $(PROJECTDIR)/$(MAKETYPE)-asmjs config=$(CONFIG)
+
+#-------------------------------------------------
+# rapi-circle / Raspberry Pi bare-metal (Circle)
+#-------------------------------------------------
+
+$(PROJECTDIR)/$(MAKETYPE)-rapi-circle/Makefile: makefile $(SCRIPTS) $(GENIE)
+	$(SILENT) $(GENIE) $(PARAMS) $(TARGET_PARAMS) --gcc=rapi-circle --gcc_version=$(GCC_VERSION) $(MAKETYPE)
+
+.PHONY: rapi-circle
+rapi-circle: generate $(PROJECTDIR)/$(MAKETYPE)-rapi-circle/Makefile
+	$(SILENT) $(MAKE) $(MAKEPARAMS) -C $(PROJECTDIR)/$(MAKETYPE)-rapi-circle config=$(CONFIG) precompile
+	$(SILENT) $(MAKE) $(MAKEPARAMS) -C $(PROJECTDIR)/$(MAKETYPE)-rapi-circle config=$(CONFIG)
 
 #-------------------------------------------------
 # gmake-linux
