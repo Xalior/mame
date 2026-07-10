@@ -71,6 +71,7 @@ namespace bx
 #		define fseeko64 _fseeki64
 #		define ftello64 _ftelli64
 #	elif 0                   \
+	  || BX_CRT_NEWLIB       \
 	  || BX_PLATFORM_ANDROID \
 	  || BX_PLATFORM_BSD     \
 	  || BX_PLATFORM_HAIKU   \

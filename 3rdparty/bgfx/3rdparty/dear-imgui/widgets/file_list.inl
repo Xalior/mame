@@ -32,11 +32,13 @@ namespace ImGui
 				}
 				else if (0 != ImStricmp(item->d_name, ".") )
 				{
+#ifdef DT_DIR // d_type is a POSIX extension; fall back to stat() where it's absent
 					if (item->d_type & DT_DIR)
 					{
 						FileList.push_back(ImFileInfo(item->d_name, -1) );
 					}
 					else
+#endif // DT_DIR
 					{
 						struct stat statbuf;
 						stat(item->d_name, &statbuf);

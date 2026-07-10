@@ -522,6 +522,10 @@ function toolchain(_buildDir, _subDir)
 			"--target=x86_64-none-linux-android" .. androidApiLevel,
 		}
 
+	configuration { "rapi-circle" }
+		targetdir (_buildDir .. "rapi-circle" .. "/bin")
+		objdir (_buildDir .. "rapi-circle" .. "/obj")
+
 	configuration { "asmjs" }
 		targetdir (_buildDir .. "asmjs" .. "/bin")
 		objdir (_buildDir .. "asmjs" .. "/obj")

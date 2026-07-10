@@ -760,9 +760,13 @@ BoolInt CPU_IsSupported_AES (void) { return APPLE_CRYPTO_SUPPORT_VAL; }
 
 #else // __APPLE__
 
+// getauxval()/HWCAP probing needs the Linux auxiliary vector; other
+// platforms fall back to the conservative stubs below.
+#if defined(__linux__)
 #include <sys/auxv.h>
 
 #define USE_HWCAP
+#endif
 
 #ifdef USE_HWCAP
 

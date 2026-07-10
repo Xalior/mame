@@ -1174,7 +1174,8 @@ configuration { "android*" }
 
 configuration { "rapi-circle" }
 	defines {
-		"ASIO_HAS_PTHREADS", -- the C library offers no other TSS mechanism ASIO recognises
+		-- threading is C++ std:: only (no pthread API); TSS via the __thread keyword
+		"ASIO_HAS_THREAD_KEYWORD_EXTENSION",
 	}
 	archivesplit_size "20"
 

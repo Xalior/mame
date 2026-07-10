@@ -72,6 +72,23 @@
 #include <utime.h>
 #include <sys/param.h>          /* for MAXPATHLEN */
 
+#ifdef _NEWLIB_VERSION
+/* newlib provides struct utimbuf but no utime(); build it from utimes() */
+#include <sys/time.h>
+static int lfs_newlib_utime(const char *path, const struct utimbuf *times)
+{
+  struct timeval tv[2];
+  if (times == NULL)
+    return utimes(path, NULL);
+  tv[0].tv_sec = times->actime;
+  tv[0].tv_usec = 0;
+  tv[1].tv_sec = times->modtime;
+  tv[1].tv_usec = 0;
+  return utimes(path, tv);
+}
+#define utime lfs_newlib_utime
+#endif
+
 #ifdef MAXPATHLEN
 #define LFS_MAXPATHLEN MAXPATHLEN
 #else

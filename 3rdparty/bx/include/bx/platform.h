@@ -35,7 +35,10 @@
 #define BX_CRT_LIBCXX 0
 #define BX_CRT_MINGW  0
 #define BX_CRT_MSVC   0
-#define BX_CRT_NEWLIB 0
+
+#ifndef BX_CRT_NEWLIB
+#	define BX_CRT_NEWLIB 0
+#endif // BX_CRT_NEWLIB
 
 #ifndef BX_CRT_NONE
 #	define BX_CRT_NONE 0

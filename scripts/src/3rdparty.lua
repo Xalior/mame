@@ -1086,6 +1086,12 @@ end
 
 	configuration { }
 
+	if _OPTIONS["targetos"]=="rapi-circle" then
+		defines {
+			"SQLITE_THREADSAFE=0", -- no pthread mutex API in this C library
+		}
+	end
+
 	files {
 		MAME_DIR .. "3rdparty/sqlite3/sqlite3.c",
 	}
@@ -1332,6 +1338,12 @@ project "bimg"
 		"__STDC_CONSTANT_MACROS",
 		"BX_CONFIG_DEBUG=0",
 	}
+
+	if _OPTIONS["targetos"]=="rapi-circle" then
+		defines {
+			"MINIZ_NO_TIME", -- C library has no utime()
+		}
+	end
 
 	if _OPTIONS["gcc"]~=nil and not string.find(_OPTIONS["gcc"], "clang") then
 		-- This is a gross hack.  For some reason GitHub Actions MinGW GCC seems to define SSE feature macros for features that are not enabled.

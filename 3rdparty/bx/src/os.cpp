@@ -19,7 +19,7 @@
 #	endif // WIN32_LEAN_AND_MEAN
 #	include <windows.h>
 #	include <psapi.h>
-#elif  BX_PLATFORM_POSIX
+#elif  BX_PLATFORM_POSIX || BX_CRT_NEWLIB
 #	include <sched.h> // sched_yield
 #	if BX_PLATFORM_BSD       \
 	|| BX_PLATFORM_HAIKU     \

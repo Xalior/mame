@@ -16,13 +16,13 @@
 #include <cstdio>
 #include <cstring>
 
+#include <sys/socket.h> // before <arpa/inet.h>: some C libraries need socklen_t declared first
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <sys/select.h>
-#include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/un.h>
 #include <unistd.h>
@@ -225,6 +225,22 @@ std::error_condition posix_open_socket(std::string const &path, std::uint32_t op
 	int port;
 	std::sscanf(&path[strlen(posixfile_socket_identifier)], "%255[^:]:%d", hostname, &port);
 
+#if defined(SDLMAME_CIRCLE)
+	// this C library resolves names through getaddrinfo() only
+	struct addrinfo hints;
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	struct addrinfo *res = nullptr;
+	if ((::getaddrinfo(hostname, nullptr, &hints, &res) != 0) || !res)
+		return std::errc::no_such_file_or_directory;
+
+	struct sockaddr_in sai;
+	memcpy(&sai, res->ai_addr, sizeof(sai));
+	::freeaddrinfo(res);
+	sai.sin_family = AF_INET;
+	sai.sin_port = htons(port);
+#else
 	struct hostent const *const localhost = ::gethostbyname(hostname);
 	if (!localhost)
 		return std::errc::no_such_file_or_directory;
@@ -234,6 +250,7 @@ std::error_condition posix_open_socket(std::string const &path, std::uint32_t op
 	sai.sin_family = AF_INET;
 	sai.sin_port = htons(port);
 	sai.sin_addr = *reinterpret_cast<struct in_addr *>(localhost->h_addr);
+#endif
 
 	int const sock = ::socket(AF_INET, SOCK_STREAM, 0);
 	if (sock < 0)
