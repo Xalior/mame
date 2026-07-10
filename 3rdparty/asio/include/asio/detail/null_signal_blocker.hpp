@@ -18,6 +18,7 @@
 #include "asio/detail/config.hpp"
 
 #if !defined(ASIO_HAS_THREADS) \
+  || !defined(ASIO_HAS_PTHREADS) \
   || defined(ASIO_WINDOWS) \
   || defined(ASIO_WINDOWS_RUNTIME) \
   || defined(__CYGWIN__) \
