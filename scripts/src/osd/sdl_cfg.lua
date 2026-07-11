@@ -115,7 +115,7 @@ if BASE_TARGETOS=="unix" then
 		buildoptions {
 			backtick(sdlconfigcmd() .. " --cflags"),
 		}
-		if _OPTIONS["targetos"]~="asmjs" then
+		if _OPTIONS["targetos"]~="asmjs" and _OPTIONS["targetos"]~="rapi-circle" then
 			buildoptions {
 				backtick(pkgconfigcmd() .. " --cflags fontconfig"),
 			}
