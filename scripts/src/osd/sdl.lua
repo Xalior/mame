@@ -380,7 +380,6 @@ project ("osd_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/modules/osdwindow.h",
 		MAME_DIR .. "src/osd/sdl/osdsdl.cpp",
 		MAME_DIR .. "src/osd/sdl/osdsdl.h",
-		MAME_DIR .. "src/osd/sdl/sdlmain.cpp",
 		MAME_DIR .. "src/osd/sdl/sdlopts.cpp",
 		MAME_DIR .. "src/osd/sdl/sdlopts.h",
 		MAME_DIR .. "src/osd/sdl/sdlprefix.h",
@@ -388,6 +387,14 @@ project ("osd_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/sdl/window.cpp",
 		MAME_DIR .. "src/osd/sdl/window.h",
 	}
+
+	if _OPTIONS["targetos"]~="rapi-circle" then
+		files {
+			-- entry point: the bare-metal target is a library linked into a
+			-- kernel image that supplies its own main()
+			MAME_DIR .. "src/osd/sdl/sdlmain.cpp",
+		}
+	end
 
 project ("ocore_" .. _OPTIONS["osd"])
 	uuid (os.uuid("ocore_" .. _OPTIONS["osd"]))
@@ -422,10 +429,16 @@ project ("ocore_" .. _OPTIONS["osd"])
 	}
 
 	if BASE_TARGETOS=="unix" then
+		if _OPTIONS["targetos"]~="rapi-circle" then
+			files {
+				-- osd_file/osd::directory: the bare-metal target has no POSIX
+				-- filesystem, so its host application supplies these instead
+				MAME_DIR .. "src/osd/modules/file/posixdir.cpp",
+				MAME_DIR .. "src/osd/modules/file/posixfile.cpp",
+				MAME_DIR .. "src/osd/modules/file/posixfile.h",
+			}
+		end
 		files {
-			MAME_DIR .. "src/osd/modules/file/posixdir.cpp",
-			MAME_DIR .. "src/osd/modules/file/posixfile.cpp",
-			MAME_DIR .. "src/osd/modules/file/posixfile.h",
 			MAME_DIR .. "src/osd/modules/file/posixptty.cpp",
 			MAME_DIR .. "src/osd/modules/file/posixsocket.cpp",
 		}
