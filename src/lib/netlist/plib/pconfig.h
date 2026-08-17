@@ -119,6 +119,11 @@
 	// Ok g++-9 -std=c++2a
 #elif __cplusplus == 202002L
 	// Ok clang++-13 -std=c++2a
+#elif __cplusplus == 202302L
+	// Ok g++-15 -std=gnu++23. The rapi-circle target compiles at C++23
+	// because the libc++ it links requires it under GCC, and this list
+	// predates that standard. The test is on the version rather than on
+	// anything netlist uses, so admitting it changes no behaviour.
 #else
 	#error "C++ version not supported"
 #endif

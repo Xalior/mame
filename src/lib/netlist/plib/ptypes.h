@@ -10,6 +10,7 @@
 
 #include "pconfig.h"
 
+#include <algorithm>    // std::copy, used by reinterpret_copy below
 #include <cstdint>
 #include <limits>
 #include <string>
