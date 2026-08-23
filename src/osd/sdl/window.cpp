@@ -654,6 +654,13 @@ osd_dim sdl_window_info::pick_best_mode()
 	target_width = minimum_width * std::max(1, prescale());
 	target_height = minimum_height * std::max(1, prescale());
 
+#if defined(SDLMAME_CIRCLE)
+	// The display is memory: any size up to the panel works, so ask for the
+	// machine's own rather than the nearest listed.
+	return osd_dim(std::min(target_width, monitor()->position_size().width()),
+			std::min(target_height, monitor()->position_size().height()));
+#endif
+
 	// if we're not stretching, allow some slop on the minimum since we can handle it
 	{
 		minimum_width -= 4;
