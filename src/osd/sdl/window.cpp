@@ -11,6 +11,7 @@
 // MAME headers
 #include "emu.h"
 #include "emuopts.h"
+#include "drivenum.h"
 #include "render.h"
 #include "screen.h"
 #include "ui/uimain.h"
@@ -655,6 +656,11 @@ osd_dim sdl_window_info::pick_best_mode()
 	target_height = minimum_height * std::max(1, prescale());
 
 #if defined(SDLMAME_CIRCLE)
+	// The system list is the empty driver, whose screen is a nominal 640x480
+	// rather than anything being emulated. Give it the panel.
+	if (&machine().system() == &GAME_NAME(___empty))
+		return monitor()->usuable_position_size().dim();
+
 	// Any size works here, so return the machine's own at square pixels
 	// rather than the nearest listed mode. The canvas is scaled uniformly
 	// onto a square-pixel panel, so the pixel aspect is 1.0 by construction
