@@ -655,10 +655,25 @@ osd_dim sdl_window_info::pick_best_mode()
 	target_height = minimum_height * std::max(1, prescale());
 
 #if defined(SDLMAME_CIRCLE)
-	// The display is memory: any size up to the panel works, so ask for the
-	// machine's own rather than the nearest listed.
-	return osd_dim(std::min(target_width, monitor()->position_size().width()),
-			std::min(target_height, monitor()->position_size().height()));
+	// Any size works here, so return the machine's own at square pixels
+	// rather than the nearest listed mode. The canvas is scaled uniformly
+	// onto a square-pixel panel, so the pixel aspect is 1.0 by construction
+	// and the monitor's figure for it is not consulted.
+	{
+		s32 w1, h1, w2, h2;
+		target()->compute_visible_area(target_width, 10000, 1.0f,
+				target()->orientation(), w1, h1);
+		target()->compute_visible_area(10000, target_height, 1.0f,
+				target()->orientation(), w2, h2);
+		if (w2 > w1)
+		{
+			w1 = w2;
+			h1 = h2;
+		}
+		osd_rect const panel = monitor()->usuable_position_size();
+		return osd_dim(std::min<s32>(w1, panel.width()),
+				std::min<s32>(h1, panel.height()));
+	}
 #endif
 
 	// if we're not stretching, allow some slop on the minimum since we can handle it
