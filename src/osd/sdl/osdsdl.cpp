@@ -798,6 +798,7 @@ void sdl_osd_interface::check_osd_inputs()
 {
 	// check for toggling fullscreen mode (don't do this in debug mode)
 	auto &inp = machine().ui_input();
+#if !defined(SDLMAME_CIRCLE)
 	if (inp.pressed(IPT_OSD_1) && !(machine().debug_flags & DEBUG_FLAG_OSD_ENABLED))
 	{
 		// destroy the renderers first so that the render module can bounce if it depends on having a window handle
@@ -806,6 +807,7 @@ void sdl_osd_interface::check_osd_inputs()
 		for (auto const &curwin : osd_common_t::window_list())
 			dynamic_cast<sdl_window_info &>(*curwin).toggle_full_screen();
 	}
+#endif
 
 	auto const &window = osd_common_t::window_list().front();
 

@@ -996,8 +996,12 @@ int sdl_window_info::complete_create()
 
 	// update monitor resolution after mode change to ensure proper pixel aspect
 	monitor()->refresh();
+#if !defined(SDLMAME_CIRCLE)
+	// The panel never moves here, only the canvas; saying otherwise wrecks
+	// the monitor's pixel aspect.
 	if (fullscreen() && video_config.switchres)
 		monitor()->update_resolution(temp.width(), temp.height());
+#endif
 
 	// initialize the drawing backend
 	if (renderer().create())

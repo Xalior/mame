@@ -128,7 +128,11 @@ void sdl_osd_interface::extract_video_config()
 	video_config.perftest    = options().video_fps();
 
 	// global options: extract the data
+#if defined(SDLMAME_CIRCLE)
+	video_config.windowed      = false;   // no window manager
+#else
 	video_config.windowed      = options().window();
+#endif
 	video_config.prescale      = options().prescale();
 	video_config.filter        = options().filter();
 	video_config.numscreens    = options().numscreens();
